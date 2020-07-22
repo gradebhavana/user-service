@@ -1,0 +1,32 @@
+version: '3.4'
+
+networks:
+  my_user_network:
+    external: true
+
+services:
+ sqlserver:
+    build:
+      context: .
+      dockerfile: sql/Dockerfile
+    image: user_sql:latest #mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Tieto@123
+      - MSSQL_PID=Express
+    ports:
+      - 1500:1433
+      - 1434:1434
+    networks:
+      - my_user_network 
+
+ usermicroservice:
+    image: user-microservice:DEV
+    ports:
+      - '53311:80'
+      - '53312:443'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - my_user_network 

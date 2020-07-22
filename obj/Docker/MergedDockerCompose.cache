@@ -1,0 +1,36 @@
+networks:
+  my_user_network:
+    external: true
+services:
+  sqlserver:
+    build:
+      context: C:\Users\bhavanarani\Desktop\bench\UserMicroservice\UserMicroservice
+      dockerfile: sql/Dockerfile
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Express
+      SA_PASSWORD: Tieto@123
+    image: user_sql:latest
+    networks:
+      my_user_network: {}
+    ports:
+    - published: 1500
+      target: 1433
+    - published: 1434
+      target: 1434
+  usermicroservice:
+    build:
+      context: C:\Users\bhavanarani\Desktop\bench\UserMicroservice\UserMicroservice
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    image: user-microservice:DEV
+    networks:
+      my_user_network: {}
+    ports:
+    - published: 53311
+      target: 80
+    - target: 80
+    - published: 53312
+      target: 443
+version: '3.4'
